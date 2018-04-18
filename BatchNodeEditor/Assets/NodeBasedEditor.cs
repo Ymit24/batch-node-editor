@@ -115,19 +115,21 @@ public class NodeBasedEditor : EditorWindow {
                 null,
                 2f
             );
+   
+            GUI.changed = true;
+        }
 
-            if (selectedOutPoint != null && selectedInPoint == null)
-            {
-               Handles.DrawBezier(
-                   selectedOutPoint.rect.center,
-                   e.mousePosition,
-                   selectedOutPoint.rect.center - Vector2.left * 50f,
-                   e.mousePosition + Vector2.left * 50f,
-                   Color.white,
-                   null,
-                   2f
-               );
-            }
+        if (selectedOutPoint != null && selectedInPoint == null)
+        {
+            Handles.DrawBezier(
+                selectedOutPoint.rect.center,
+                e.mousePosition,
+                selectedOutPoint.rect.center - Vector2.left * 50f,
+                e.mousePosition + Vector2.left * 50f,
+                Color.white,
+                null,
+                2f
+            );
             GUI.changed = true;
         }
     }
@@ -138,6 +140,7 @@ public class NodeBasedEditor : EditorWindow {
         switch (e.type)
         {
             case EventType.MouseDown:
+                ClearConnectionSelection();
                 if (e.button == 1)
                 {
                     ProcessContextMenu(e.mousePosition);
@@ -193,7 +196,7 @@ public class NodeBasedEditor : EditorWindow {
         {
             nodes = new List<Node>();
         }
-        nodes.Add(new Node(mousePosition, 200, 50, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+        nodes.Add(new Node(mousePosition, 200, 1, 4, 3, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
     }
 
     private void OnClickInPoint(ConnectionPoint inPoint)
@@ -249,7 +252,7 @@ public class NodeBasedEditor : EditorWindow {
             List<Connection> connectionsToRemove = new List<Connection>();
             for (int i = 0; i < connections.Count; i++)
             {
-                if (connections[i].inPoint == node.inPoint || connections[i].outPoint == node.outPoint)
+                if (node.inPoints.Contains(connections[i].inPoint) || node.outPoints.Contains(connections[i].outPoint))
                 {
                     connectionsToRemove.Add(connections[i]);
                 }
@@ -263,5 +266,6 @@ public class NodeBasedEditor : EditorWindow {
             connectionsToRemove = null;
         }
         nodes.Remove(node);
+        ClearConnectionSelection();
     }
 }

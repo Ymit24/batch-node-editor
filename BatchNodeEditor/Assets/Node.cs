@@ -10,18 +10,29 @@ public class Node {
     public bool isDragged;
     public bool isSelected;
 
-    public ConnectionPoint inPoint, outPoint;
+    public List<ConnectionPoint> inPoints, outPoints;
 
     public GUIStyle style, defaultNodeStyle, selectedNodeStyle;
 
     public Action<Node> OnRemoveNode;
 
-    public Node(Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<Node> OnClickRemoveNode)
+    public Node(Vector2 position, float width, float height, int inPoints, int outPoints, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<Node> OnClickRemoveNode)
     {
-        rect = new Rect(position.x, position.y, width, height);
+        rect = new Rect(position.x, position.y, width, height + 20 * (1+Math.Max(inPoints, outPoints)));
         style = nodeStyle;
-        inPoint = new ConnectionPoint(this, ConnectionPointType.In, inPointStyle, OnClickInPoint);
-        outPoint = new ConnectionPoint(this, ConnectionPointType.Out, outPointStyle, OnClickOutPoint);
+        this.inPoints = new List<ConnectionPoint>();
+        this.outPoints = new List<ConnectionPoint>();
+
+        for (int i = 0; i < inPoints; i++)
+        {
+            this.inPoints.Add(new ConnectionPoint(this, i, ConnectionPointType.In, inPointStyle, OnClickInPoint));
+        }
+
+        for (int i = 0; i < outPoints; i++)
+        {
+            this.outPoints.Add(new ConnectionPoint(this, i, ConnectionPointType.Out, outPointStyle, OnClickOutPoint));
+        }
+
         defaultNodeStyle = nodeStyle;
         selectedNodeStyle = selectedStyle;
         OnRemoveNode = OnClickRemoveNode;
@@ -34,8 +45,14 @@ public class Node {
 
     public void Draw()
     {
-        inPoint.Draw();
-        outPoint.Draw();
+        foreach (ConnectionPoint cp in inPoints)
+        {
+            cp.Draw();
+        }
+        foreach (ConnectionPoint cp in outPoints)
+        {
+            cp.Draw();
+        }
         GUI.Box(rect, title, style);
     }
 
