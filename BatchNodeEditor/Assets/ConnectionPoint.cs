@@ -8,15 +8,19 @@ public enum ConnectionPointType { In, Out }
 
 public class ConnectionPoint {
     public Rect rect;
+
+    public string name;
+
     public ConnectionPointType type;
     public Node node;
     public GUIStyle style;
     public Action<ConnectionPoint> OnClickConnectionPoint;
     public int index;
 
-    public ConnectionPoint(Node node, int index, ConnectionPointType type, GUIStyle style, Action<ConnectionPoint> OnClickConnectionPoint)
+    public ConnectionPoint(Node node, string name, int index, ConnectionPointType type, GUIStyle style, Action<ConnectionPoint> OnClickConnectionPoint)
     {
         this.node = node;
+        this.name = name;
         this.index = index;
         this.type = type;
         this.style = style;
@@ -37,7 +41,8 @@ public class ConnectionPoint {
                 rect.x = node.rect.x + node.rect.width - 8;
                 break;
         }
-
+        Rect lrect = new Rect(rect.position + new Vector2(10, 0), rect.size + new Vector2(200,20));
+        GUI.Label(lrect, new GUIContent(name));
         if (GUI.Button(rect,"",style))
         {
             if (OnClickConnectionPoint != null)

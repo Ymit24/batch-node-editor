@@ -16,8 +16,9 @@ public class Node {
 
     public Action<Node> OnRemoveNode;
 
-    public Node(Vector2 position, float width, float height, int inPoints, int outPoints, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<Node> OnClickRemoveNode)
+    public Node(Vector2 position, string title, string[] inputNames, string[] outputNames, float width, float height, int inPoints, int outPoints, GUIStyle nodeStyle, GUIStyle selectedStyle, GUIStyle inPointStyle, GUIStyle outPointStyle, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<Node> OnClickRemoveNode)
     {
+        this.title = title;
         rect = new Rect(position.x, position.y, width, height + 20 * (1+Math.Max(inPoints, outPoints)));
         style = nodeStyle;
         this.inPoints = new List<ConnectionPoint>();
@@ -25,12 +26,12 @@ public class Node {
 
         for (int i = 0; i < inPoints; i++)
         {
-            this.inPoints.Add(new ConnectionPoint(this, i, ConnectionPointType.In, inPointStyle, OnClickInPoint));
+            this.inPoints.Add(new ConnectionPoint(this, inputNames[i], i, ConnectionPointType.In, inPointStyle, OnClickInPoint));
         }
 
         for (int i = 0; i < outPoints; i++)
         {
-            this.outPoints.Add(new ConnectionPoint(this, i, ConnectionPointType.Out, outPointStyle, OnClickOutPoint));
+            this.outPoints.Add(new ConnectionPoint(this, outputNames[i], i, ConnectionPointType.Out, outPointStyle, OnClickOutPoint));
         }
 
         defaultNodeStyle = nodeStyle;
@@ -43,8 +44,9 @@ public class Node {
         rect.position += delta;
     }
 
-    public void Draw()
+    public virtual void Draw()
     {
+        GUI.Box(rect, title, style);
         foreach (ConnectionPoint cp in inPoints)
         {
             cp.Draw();
@@ -53,7 +55,6 @@ public class Node {
         {
             cp.Draw();
         }
-        GUI.Box(rect, title, style);
     }
 
     public bool ProcessEvents(Event e)

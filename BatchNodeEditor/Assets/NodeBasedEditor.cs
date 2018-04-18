@@ -196,7 +196,8 @@ public class NodeBasedEditor : EditorWindow {
         {
             nodes = new List<Node>();
         }
-        nodes.Add(new Node(mousePosition, 200, 1, 4, 3, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+        //nodes.Add(new Node(mousePosition, 200, 1, 4, 3, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
+        nodes.Add(new ValueNode(mousePosition, nodeStyle, selectedNodeStyle, inPointStyle, outPointStyle, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode));
     }
 
     private void OnClickInPoint(ConnectionPoint inPoint)
